@@ -29,6 +29,10 @@ import {
   loadEsmModule,
   SourceFileCache,
 } from './utils/devkit';
+import {
+  defaultMarkdownTemplateTransforms,
+  MarkdownTemplateTransform,
+} from './authoring/markdown-transform';
 
 export interface PluginOptions {
   tsconfig?: string;
@@ -46,6 +50,7 @@ export interface PluginOptions {
      * Enable experimental support for Analog file extension
      */
     supportAnalogFormat?: boolean;
+    markdownTemplateTransforms?: MarkdownTemplateTransform[];
   };
   supportedBrowsers?: string[];
   transformFilter?: (code: string, id: string) => boolean;
@@ -90,6 +95,9 @@ export function angular(options?: PluginOptions): Plugin[] {
     supportedBrowsers: options?.supportedBrowsers ?? ['safari 15'],
     jit: options?.jit,
     supportAnalogFormat: options?.experimental?.supportAnalogFormat ?? false,
+    markdownTemplateTransforms:
+      options?.experimental?.markdownTemplateTransforms ??
+      defaultMarkdownTemplateTransforms,
   };
 
   // The file emitter created during `onStart` that will be used during the build in `onLoad` callbacks for TS files
@@ -463,6 +471,7 @@ export function angular(options?: PluginOptions): Plugin[] {
         inlineStylesExtension: pluginOptions.inlineStylesExtension,
         supportAnalogFormat: pluginOptions.supportAnalogFormat,
         isProd,
+        markdownTemplateTransforms: pluginOptions.markdownTemplateTransforms,
       });
     }
   }
